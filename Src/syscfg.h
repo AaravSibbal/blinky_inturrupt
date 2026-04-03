@@ -1,15 +1,17 @@
 #ifndef SYSCFG_H
 #define SYSCFG_H
 
+#include "def.h"
+
 #define SYSCFG_BASE (0x40013800)
 #define EXTICR1_PA_BIT (0b0000)
 #define EXTICR1_BIT_MSK ((1<<4)-1)
 
 typedef struct SYSCFG{
-    uint32_t SYSCFG_MEMRMP;
-    uint32_t SYSCFG_PMC;
-    uint32_t SYSCFG_EXTICR[4];
-    uint32_t SYSCFG_CMPCR;
+    __IO uint32_t SYSCFG_MEMRMP;
+    __IO uint32_t SYSCFG_PMC;
+    __IO uint32_t SYSCFG_EXTICR[4];
+    __IO uint32_t SYSCFG_CMPCR;
 } SYSCFG_t;
 
 #define SYSCFG_ENGINE ((SYSCFG_t *) SYSCFG_BASE);

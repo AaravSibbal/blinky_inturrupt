@@ -22,15 +22,33 @@ set exti_IMR bit 0 to 1. For interrput line PA. this is because we want to cause
 set exti_RTSR bit 0 to 1, this is us defining the actual even that triggers the ISR.
 
 
-now for the gpios it is pretty standard stuff here. like the odr, moder. we set odr for PD4, we set up GPIOD moder to output, I don't exactly at this time know what we do with gpioa though from my blinky code we did set it up in input state for moder and that makes sense to me.
+now for the gpios it is pretty standard stuff here. 
+like the odr, moder. we set odr for PD4, we set up GPIOD moder 
+to output, I don't exactly at this time know what we do with gpioa 
+though from my blinky code we did set it up in input state for moder 
+and that makes sense to me.
 
 
  */
 
+
+
+
 #include "rcc.h"
+#include "syscfg.h"
+
+#define USER_BTN_PIN 0
+#define USER_BTN_SYSCFG_PORT SYSCFG_EXTI_PORTA;
+
+void init_clocks();
+
 int main(void){
+    init_clocks();
+    SYSCFG_enable_EXTI(USER_BTN_SYSCFG_PORT, USER_BTN_PIN);
+    
+}
+
+void init_clocks(){
     RCC_AHB1_ENR |= (RCC_AHB1_GPIOA_EN) | (RCC_AHB1_GPIOD_EN);
     RCC_APB2_ENR |= (RCC_APB2_SYSCFG_EN);
-
-    
 }
