@@ -11,10 +11,11 @@ typedef struct SYSCFG{
     __IO uint32_t SYSCFG_MEMRMP;
     __IO uint32_t SYSCFG_PMC;
     __IO uint32_t SYSCFG_EXTICR[4];
+    uint32_t RESERVED[2];
     __IO uint32_t SYSCFG_CMPCR;
 } SYSCFG_t;
 
-#define SYSCFG_ENGINE ((SYSCFG_t *) SYSCFG_BASE);
+#define SYSCFG_ENGINE ((SYSCFG_t *) SYSCFG_BASE)
 
 typedef enum SYSCFG_EXTI_Port {
     SYSCFG_EXTI_PORTA = 0,
