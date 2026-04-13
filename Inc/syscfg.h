@@ -5,7 +5,7 @@
 
 #define SYSCFG_BASE (0x40013800)
 #define EXTICR1_PA_BIT (0b0000)
-#define EXTICR1_BIT_MSK ((1<<4)-1)
+#define EXTICR1_BIT_MSK ((1UL<<4)-1)
 
 typedef struct SYSCFG{
     __IO uint32_t SYSCFG_MEMRMP;
