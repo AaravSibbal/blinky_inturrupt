@@ -35,10 +35,10 @@ and that makes sense to me.
 
 
 #include "rcc.h"
-#include "syscfg.h"
+#include "interrupts/syscfg.h"
 
-#define USER_BTN_PIN 0
-#define USER_BTN_SYSCFG_PORT SYSCFG_EXTI_PORTA;
+#define USER_BTN_PIN ((uint8_t) 0)
+#define USER_BTN_SYSCFG_PORT (SYSCFG_EXTI_PORTA)
 
 void init_clocks();
 

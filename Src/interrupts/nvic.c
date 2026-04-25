@@ -39,6 +39,6 @@ void NVIC_clear_pending_IRQ(IRQn_t IRQn){
     NVIC_ENGINE->NVIC_ICPR[icpr_idx] = (1UL<<icpr_bit);
 }
 
-void NVIC_get_pending_IRQ(IRQn_t IRQn){
-    
+uint32_t NVIC_get_pending_IRQ(IRQn_t IRQn){
+    return 0;
 }

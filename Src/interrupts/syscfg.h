@@ -1,7 +1,7 @@
 #ifndef SYSCFG_H
 #define SYSCFG_H
 
-#include "def.h"
+#include "../def.h"
 
 #define SYSCFG_BASE (0x40013800)
 #define EXTICR1_PA_BIT (0b0000)
@@ -33,3 +33,5 @@ typedef enum SYSCFG_EXTI_Port {
  * values can range from 0-15
  */
 void SYSCFG_enable_EXTI(SYSCFG_EXTI_Port_t port, uint8_t pin);
+
+#endif

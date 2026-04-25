@@ -1,7 +1,7 @@
 #ifndef NVIC_H
 #define NVIC_H
 
-#include "def.h"
+#include "../def.h"
 
 #define NVIC_BASE (0xE000E100)
 

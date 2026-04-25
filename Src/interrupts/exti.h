@@ -1,7 +1,7 @@
 #ifndef EXTI_H
 #define EXTI_H
 
-#include "def.h"
+#include "../def.h"
 
 #define EXTI_BASE (0x40013C00)
 

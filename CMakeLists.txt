@@ -43,6 +43,14 @@ set(cpu_PARAMS
 # Sources
 set(sources_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/Src/main.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/gpio.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/print/driver/dbgmcu.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/print/driver/itm.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/print/driver/tpiu.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/interrupts/exti.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/interrupts/nvic.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/interrupts/scb.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/interrupts/syscfg.c
 )
 
 # Include directories for all compilers

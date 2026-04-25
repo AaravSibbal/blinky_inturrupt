@@ -1,9 +1,10 @@
 #ifndef SCB_H
 #define SCB_H
 
-#include "def.h"
+#include "../def.h"
 
 #define SCB_BASE (0xE000ED00)
+#define BUSFAULTENA_MASK (1UL << 17)
 
 typedef struct SCB{
     __IO uint32_t SCB_CPUID;
@@ -23,7 +24,9 @@ typedef struct SCB{
 
 #define SCB_ENGINE ((SCB_t*) SCB_BASE)
 
-void SCB_enable_bus_fault();
+void SCB_en_bus_fault();
+void BusFault_Handler();
+
 
 
 #endif
