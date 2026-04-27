@@ -34,21 +34,30 @@ and that makes sense to me.
 
 
 
+#include "Src/print/driver/itm.h"
 #include "rcc.h"
 #include "interrupts/syscfg.h"
+#include "print/printf.h"
 
 #define USER_BTN_PIN ((uint8_t) 0)
 #define USER_BTN_SYSCFG_PORT (SYSCFG_EXTI_PORTA)
 
-void init_clocks();
+void init_clocks(void);
 
 int main(void){
     init_clocks();
-    SYSCFG_enable_EXTI(USER_BTN_SYSCFG_PORT, USER_BTN_PIN);
-    
+    // SYSCFG_enable_EXTI(USER_BTN_SYSCFG_PORT, USER_BTN_PIN);
+    ITM_init(ITM_ENGINE);
+    printf("I did it!!! with no heap!\n");
+    // char ch = 'A';
+    // int ch_int = (int) ch;
+    // __io_putchar(ch_int);
+    while(1){
+
+    }
 }
 
-void init_clocks(){
-    RCC_AHB1_ENR |= (RCC_AHB1_GPIOA_EN) | (RCC_AHB1_GPIOD_EN);
+void init_clocks(void){
+    RCC_AHB1_ENR |= (RCC_AHB1_GPIOA_EN) | (RCC_AHB1_GPIOD_EN) | (RCC_AHB1_GPIOB_EN);
     RCC_APB2_ENR |= (RCC_APB2_SYSCFG_EN);
 }

@@ -4,6 +4,7 @@
 #include "../../def.h"
 #include "../../gpio.h"
 #include "dbgmcu.h"
+#include "demcr.h"
 #include "tpiu.h"
 
 #define ITM_BASE (0xE0000000)
@@ -29,12 +30,12 @@ typedef struct ITM{
 /**
  * port values are from 0-31
  */
-void ITM_unlock_port(ITM_t *const self, const uint8_t port);
 void ITM_init(ITM_t * const self);
 /**
  * port values are from 0-31
  */
-void ITM_put_char(ITM_t * const self, const char * const c, const uint8_t port);
+void ITM_put_char(ITM_t * const self, char ch, uint8_t port);
+int __io_putchar(int ch);
 
 /**
  *Your ITM Implementation Checklist

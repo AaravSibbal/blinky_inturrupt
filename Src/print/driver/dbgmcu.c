@@ -1,6 +1,6 @@
 #include "dbgmcu.h"
 
-static void DBGMCU_en_trace(){
+static void DBGMCU_en_trace(void){
     DBGMCU_CR |= DBGMCU_TRACE_EN_MSK;
 }
 

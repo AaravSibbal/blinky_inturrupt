@@ -24,8 +24,8 @@ typedef struct SCB{
 
 #define SCB_ENGINE ((SCB_t*) SCB_BASE)
 
-void SCB_en_bus_fault();
-void BusFault_Handler();
+void SCB_en_bus_fault(void);
+void BusFault_Handler(void);
 
 
 
