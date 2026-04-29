@@ -16,7 +16,7 @@ static inline void SCB_en_div0_trap(SCB_t * const self){
 }
 
 void SCB_init(SCB_t * const self){
-    SCB_enable_error(self);
+    SCB_enable_errors(self);
     SCB_en_stack_align(self);
     SCB_en_div0_trap(self);
 }
@@ -69,14 +69,15 @@ __attribute__((naked)) void HardFault_Handler(void) {
 }
 
 
-static void HardFault_decoder(const uint32_t * const fault_stack){
-    printf("[HARD FAULT HANDLER]\n")
+__attribute__((used)) static void HardFault_Decoder(const uint32_t * const fault_stack){
+    printf("[HARD FAULT HANDLER]\n");
     print_stack(fault_stack);
     printf ("BFAR = 0x%08lX\n", SCB_ENGINE->SCB_BFAR);
     printf ("CFSR = 0x%08lX\n", SCB_ENGINE->SCB_CFSR);
     printf ("HFSR = 0x%08lX\n", SCB_ENGINE->SCB_HFSR);
     while(1){
         // loop forever
+        __asm volatile ("nop");
     }
 }
 
@@ -90,7 +91,7 @@ __attribute__((naked)) void BusFault_Handler(void){
     );
 }
 
-static void BusFault_Decoder(const uint32_t * const fault_stack){
+__attribute__((used)) static void BusFault_Decoder(const uint32_t * const fault_stack){
     uint32_t cfsr = SCB_ENGINE->SCB_CFSR;
     uint32_t bfar = SCB_ENGINE->SCB_BFAR;
     printf("[BUS FAULT HANDLER]\n");
@@ -109,7 +110,7 @@ static void BusFault_Decoder(const uint32_t * const fault_stack){
         printf("Unstack error: Unstack for an exception return has caused one or more bus faults.\n");
     }
     if(cfsr & (CFSR_STKERR_MSK)){
-        printf("Stack error: Stacking for an exception entry has caused one or more bus faults\n")
+        printf("Stack error: Stacking for an exception entry has caused one or more bus faults\n");
     }
     if(cfsr & (CFSR_LSPERR_MSK)){
         printf("Floating point lazy state prevention error.\n");
@@ -137,10 +138,10 @@ __attribute__((naked)) void MemManage_Handler(void){
     );
 }
 
-static void MemManage_Decoder(const uint32_t * const fault_stack){
-    uint32_t mmfar = SCB_ENGINE->SCB_MMFAR;
+__attribute__((used)) static void MemManage_Decoder(const uint32_t * const fault_stack){
+    uint32_t mmfar = SCB_ENGINE->SCB_MMAR;
     uint32_t cfsr = SCB_ENGINE->SCB_CFSR;
-    printf("[MEMORY MANAGEMENT FAULT DETECTED]\n")
+    printf("[MEMORY MANAGEMENT FAULT DETECTED]\n");
     print_stack(fault_stack);
     if(cfsr & (CFSR_IACCVIOL_MSK)){
         printf("Instruction access violation: The processor attempted an instruction fetch from a location that does not permit execution.\n");
@@ -163,6 +164,46 @@ static void MemManage_Decoder(const uint32_t * const fault_stack){
     }
 
     SCB_clr_cfsr(SCB_ENGINE, cfsr);
+    while(1){
+        __asm volatile ("nop");
+    }
+}
+
+__attribute__((naked)) void UsageFault_Handler(void){
+    __asm volatile (
+        "tst lr, #4 \n"         // Check which stack pointer was in use (MSP or PSP)
+        "ite eq \n"             // If/Then/Else block
+        "mrseq r0, msp \n"      // If MSP was used, move MSP into R0
+        "mrsne r0, psp \n"      // If PSP was used, move PSP into R0
+        "b UsageFault_Decoder \n" // Branch to your C function, passing R0 as the first argument       
+    );
+}
+
+__attribute__((used)) static void UsageFault_Decoder(const uint32_t * const fault_stack){
+    uint32_t cfsr = SCB_ENGINE->SCB_CFSR;
+    printf("[USAGE FAULT DETECTED]\n");
+    print_stack(fault_stack);
+    if(cfsr & (CFSR_DIVBYZERO_MSK)){
+        printf("Div by 0 error\n");
+    }   
+    if(cfsr & (CFSR_UNALIGNED_MSK)){
+        printf("Unaligned access usage fault: the processor has made an unaligned memory access.\n");
+    }
+    if(cfsr & (CFSR_NOCP_MSK)){
+        printf("The processor has attempted to access a coprocessor. The proccessor does not support a coprosossor\n");
+    }
+    if(cfsr & (CFSR_INVPC_MSK)){
+        printf("Invalid PC load usage fault, caused by an invalid PC load by EXC_RETURN\n");
+    }
+    if(cfsr & (CFSR_INVSTATE_MSK)){
+        printf("Invalid state usage fault: The processor has attempted to execute an instruction that makes illegal use of the EPSR.\n");
+    }
+    if(cfsr & (CFSR_UNDEFINSTR_MSK)){
+        printf("The processor has attempted to execute an undefined instruction.\n");
+    }
+
+    SCB_clr_cfsr(SCB_ENGINE, cfsr);
+
     while(1){
         __asm volatile ("nop");
     }

@@ -5,7 +5,7 @@
 #include "../print/printf.h"
 
 #define SCB_BASE (0xE000ED00)
-`
+
 #define USGFAULTENA_MSK (1UL << 18)
 #define BUSFAULTENA_MSK (1UL << 17)
 #define MEMFAULTENA_MSK (1UL << 16)
@@ -29,6 +29,13 @@
 #define CFSR_MLSPERR_MSK (1UL<<5)
 #define CFSR_MMARVALID_MSK (1UL<<7)
 
+// USAGE FAULTS ERR MSKS
+#define CFSR_UNDEFINSTR_MSK (1UL<<16)
+#define CFSR_INVSTATE_MSK (1UL<17)
+#define CFSR_INVPC_MSK (1UL<<18)
+#define CFSR_NOCP_MSK (1UL<<19)
+#define CFSR_UNALIGNED_MSK (1UL<<24)
+#define CFSR_DIVBYZERO_MSK (1UL<<25)
 
 
 typedef struct SCB{

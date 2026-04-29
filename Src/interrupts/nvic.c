@@ -1,5 +1,4 @@
 #include "nvic.h"
-#include <cstdio>
 #include <stdint.h>
 
 static uint32_t size_check(IRQn_t IRQn){
@@ -8,12 +7,12 @@ static uint32_t size_check(IRQn_t IRQn){
         printf("invalid IRQn value: %d", IRQn);
         return 0;
     }
-    return 1
+    return 1;
 }
 
 void NVIC_enable_IRQ(IRQn_t IRQn){
     if(!size_check(IRQn)){
-        prinf("could not enable IRQn: %d", IRQn);
+        printf("could not enable IRQn: %d", IRQn);
         return;
     }
     uint32_t iser_idx = IRQn/32;
@@ -23,7 +22,7 @@ void NVIC_enable_IRQ(IRQn_t IRQn){
 }
 
 void NVIC_disable_IRQ(IRQn_t IRQn){
-    if(!size_check(IRQn_t IRQn)){
+    if(!size_check(IRQn)){
         printf("could not disable IRQn %d", IRQn);
         return;
     }
@@ -36,7 +35,7 @@ void NVIC_disable_IRQ(IRQn_t IRQn){
 
 void NVIC_set_pending_IRQ(IRQn_t IRQn){
     if(!size_check(IRQn)){
-        prinf("could not set pending IRQn: %d", IRQn);
+        printf("could not set pending IRQn: %d", IRQn);
         return;
     }
     uint32_t ispr_idx = IRQn/32;
@@ -47,7 +46,7 @@ void NVIC_set_pending_IRQ(IRQn_t IRQn){
 
 void NVIC_clear_pending_IRQ(IRQn_t IRQn){
     if(!size_check(IRQn)){
-        prinf("could not clear pending IRQn: %d", IRQn);
+        printf("could not clear pending IRQn: %d", IRQn);
         return;
     }
     uint32_t icpr_idx = IRQn/32;
