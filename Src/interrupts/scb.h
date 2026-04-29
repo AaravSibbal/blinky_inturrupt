@@ -21,6 +21,15 @@
 #define CFSR_PRECISEERR_MSK (1UL<<9)
 #define CFSR_IBUSERR_MSK (1UL<<8)
 
+// MEMORY MANAGEMENT ERR MSKS
+#define CFSR_IACCVIOL_MSK (1UL<<0)
+#define CFSR_DACCVIOL_MSK (1UL<<1)
+#define CFSR_MUNSTKERR_MSK (1UL<<3)
+#define CFSR_MSTKERR_MSK (1UL<<4)
+#define CFSR_MLSPERR_MSK (1UL<<5)
+#define CFSR_MMARVALID_MSK (1UL<<7)
+
+
 
 typedef struct SCB{
     __IO uint32_t SCB_CPUID;

@@ -1,5 +1,7 @@
 #include "scb.h"
 #include "Src/print/printf.h"
+#include <cstdio>
+#include <stdint.h>
 
 static inline void SCB_enable_errors(SCB_t * const self){
     self->SCB_SHSCR |= (BUSFAULTENA_MSK) | (USGFAULTENA_MSK) | (MEMFAULTENA_MSK);
@@ -17,6 +19,10 @@ void SCB_init(SCB_t * const self){
     SCB_enable_error(self);
     SCB_en_stack_align(self);
     SCB_en_div0_trap(self);
+}
+
+static inline void SCB_clr_cfsr(SCB_t * const self, uint32_t old_cfsr){
+    self->SCB_CFSR = old_cfsr;
 }
 
 
@@ -81,7 +87,7 @@ __attribute__((naked)) void BusFault_Handler(void){
         "mrseq r0, msp \n"      // If MSP was used, move MSP into R0
         "mrsne r0, psp \n"      // If PSP was used, move PSP into R0
         "b BusFault_Decoder \n" // Branch to your C function, passing R0 as the first argument       
-    )
+    );
 }
 
 static void BusFault_Decoder(const uint32_t * const fault_stack){
@@ -113,8 +119,51 @@ static void BusFault_Decoder(const uint32_t * const fault_stack){
         printf("Address: 0x%08lX\n", bfar);
     }
 
+    // clear cfsr
+    SCB_clr_cfsr(SCB_ENGINE, cfsr);
+
     while(1){
         __asm volatile ("nop");
     }
 }
 
+__attribute__((naked)) void MemManage_Handler(void){
+    __asm volatile (
+        "tst lr, #4 \n"         // Check which stack pointer was in use (MSP or PSP)
+        "ite eq \n"             // If/Then/Else block
+        "mrseq r0, msp \n"      // If MSP was used, move MSP into R0
+        "mrsne r0, psp \n"      // If PSP was used, move PSP into R0
+        "b MemManage_Decoder \n" // Branch to your C function, passing R0 as the first argument       
+    );
+}
+
+static void MemManage_Decoder(const uint32_t * const fault_stack){
+    uint32_t mmfar = SCB_ENGINE->SCB_MMFAR;
+    uint32_t cfsr = SCB_ENGINE->SCB_CFSR;
+    printf("[MEMORY MANAGEMENT FAULT DETECTED]\n")
+    print_stack(fault_stack);
+    if(cfsr & (CFSR_IACCVIOL_MSK)){
+        printf("Instruction access violation: The processor attempted an instruction fetch from a location that does not permit execution.\n");
+    }
+    if(cfsr & (CFSR_DACCVIOL_MSK)){
+        printf("Data access violation: The processor attempted a load or store at a location that does not permit the operation.\n");
+    }
+    if(cfsr & (CFSR_MUNSTKERR_MSK)){
+        printf("Unstacking error on a return from exception: Unstack for an exception return has caused one or more access violations.\n");
+    }
+    if(cfsr & (CFSR_MSTKERR_MSK)){
+        printf("Memory manager fault on stacking for exception entry: Stacking for an exception entry has caused one or more access violations.\n");
+    }   
+    if(cfsr & (CFSR_MLSPERR_MSK)){
+        printf("Floating point lazy prevention error: A MemManage fault occurred during floating-point lazy state preservation\n");
+    }
+    if(cfsr & (CFSR_MMARVALID_MSK)){
+        printf("We found a valid memory address for the fault.\n");
+        printf("Address: 0x%08lX", mmfar);
+    }
+
+    SCB_clr_cfsr(SCB_ENGINE, cfsr);
+    while(1){
+        __asm volatile ("nop");
+    }
+}
