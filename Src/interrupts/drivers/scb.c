@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 static inline void SCB_enable_errors(SCB_t * const self){
-    self->SCB_SHSCR |= (BUSFAULTENA_MSK) | (USGFAULTENA_MSK) | (MEMFAULTENA_MSK);
+    self->SCB_SHCSR |= (BUSFAULTENA_MSK) | (USGFAULTENA_MSK) | (MEMFAULTENA_MSK);
 }
 
 static inline void SCB_en_stack_align(SCB_t * const self){
@@ -216,6 +216,29 @@ void SCB_write_priority_grouping(SCB_t * const self, PriorityGroup_t pg){
     self->SCB_AIRCR = aircr_clear | (SCB_AIRCR_KEY<<16) | (pg_32<<8);
 }
 
+uint32_t SCB_get_active(SCB_t * const self, IRQn_t IRQn){
+    switch(IRQn){
+        case SysTick_IRQn:
+            uint32_t is_active = SHCSR_SYSTICK_IS_ACTIVE_MSK;
+            return is_active;
+            break;
+        case UsageFault_IRQn:
+            uint32_t is_active = SHCSR_USGFAULT_IS_ACTIVE_MSK;
+            return is_active;
+            break;
+        case BusFault_IRQn:
+            uint32_t is_active = SHCSR_BUSFAULT_IS_ACTIVE_MSK;
+            return is_active;
+            break;
+        case MemoryManagement_IRQn:
+            uint32_t is_active = SHCSR_MEMFAULT_IS_ACTIVE_MSK;
+            return is_active;
+            break;
+        default:
+            printf("couldn't get the active bit, IRQn not supported: %d", IRQn);
+            return 0;
+    }
+}
 
 static inline void set_systick_priority(SCB_t * const self, uint32_t priority){
     self->SCB_SHPR[2] &= ~(0xFUL << 28);

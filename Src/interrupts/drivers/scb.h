@@ -52,7 +52,7 @@ typedef struct SCB{
     __IO uint32_t SCB_SCR;
     __IO uint32_t SCB_CCR;
     __IO uint32_t SCB_SHPR[3];
-    __IO uint32_t SCB_SHSCR;
+    __IO uint32_t SCB_SHCSR;
     __IO uint32_t SCB_CFSR;
     __IO uint32_t SCB_HFSR;
     __IO uint32_t SCB_MMAR;
@@ -69,6 +69,12 @@ typedef enum PriorityGroup{
     PRIGROUP_1PRE_3SUB = 0x06,
     PRIGROUP_0PRE_4SUB = 0x07 
 }PriorityGroup_t;
+
+
+#define SHCSR_SYSTICK_IS_ACTIVE_MSK ((SCB_ENGINE->SCB_SHCSR >> 11UL) & 1UL)
+#define SHCSR_USGFAULT_IS_ACTIVE_MSK ((SCB_ENGINE->SCB_SHCSR >> 3UL) & 1UL)
+#define SHCSR_BUSFAULT_IS_ACTIVE_MSK ((SCB_ENGINE->SCB_SHCSR >> 1UL) & 1UL)
+#define SHCSR_MEMFAULT_IS_ACTIVE_MSK ((SCB_ENGINE->SCB_SHCSR >> 0UL) & 1UL)
 
 /**
     enables bus, mem and usage faults
