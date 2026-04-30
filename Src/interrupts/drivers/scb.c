@@ -1,5 +1,7 @@
 #include "scb.h"
 #include "Src/print/printf.h"
+#include "irq.h"
+#include <cstdio>
 #include <stdint.h>
 
 static inline void SCB_enable_errors(SCB_t * const self){
@@ -212,4 +214,94 @@ void SCB_write_priority_grouping(SCB_t * const self, PriorityGroup_t pg){
     uint32_t pg_32 = pg;
     uint32_t aircr_clear = (self->SCB_AIRCR) & ~(AIRCR_PRIORITY_GROUPING_MSK);
     self->SCB_AIRCR = aircr_clear | (SCB_AIRCR_KEY<<16) | (pg_32<<8);
+}
+
+
+static inline void set_systick_priority(SCB_t * const self, uint32_t priority){
+    self->SCB_SHPR[2] &= ~(0xFUL << 28);
+    self->SCB_SHPR[2] |= (priority<<28);
+}
+
+static inline void set_usage_fault_priority(SCB_t * const self, uint32_t priority){
+    self->SCB_SHPR[0] &= ~(0xFUL<<20);
+    self->SCB_SHPR[0] |= (priority<<20);
+}
+
+static inline void set_bus_fault_priority(SCB_t * const self, uint32_t priority){
+    self->SCB_SHPR[0] &= ~(0xFUL<<12);
+    self->SCB_SHPR[0] |= (priority<<12);
+}
+
+static inline void set_mem_manage_priority(SCB_t * const self, uint32_t priority){
+    self->SCB_SHPR[0] &= ~(0xFUL<<4);
+    self->SCB_SHPR[0] |= (priority<<4);
+}
+
+void SCB_set_priority(SCB_t * const self, IRQn_t IRQn, uint32_t priority){
+    if(IRQn >= 0){
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d", IRQn);
+        return;
+    }
+    if(priority > 16){
+        printf("SCB: could not set the priority for IRQn: %d, becauase the priority is too high, Priority: %d", IRQn, priority);
+        return;
+    }
+    
+    switch (IRQn) {
+        case SysTick_IRQn:
+            set_systick_priority(self, priority);
+            break;
+        case UsageFault_IRQn:
+            set_usage_fault_priority(self, priority);
+            break;
+        case BusFault_IRQn:
+            set_bus_fault_priority(self, priority);
+            break;
+        case MemoryManagement_IRQn:
+            set_mem_manage_priority(self, priority);
+            break;
+        default:
+            printf("SCB: could not set the priority for IRQn: %d, not supported", IRQn);
+    }   
+}
+
+static inline uint32_t get_systick_priority(SCB_t * const self){
+    uint32_t priority = (self->SCB_SHPR[2] >> 28UL) & 0x0F;
+    return priority; 
+}
+
+static inline uint32_t get_usage_fault_priority(SCB_t * const self){
+    uint32_t priority = ((self->SCB_SHPR[0] >> 20) & 0x0FUL);
+    return priority;
+}
+
+static inline uint32_t get_mem_manage_priority(SCB_t * const self){
+    uint32_t priority = ((self->SCB_SHPR[0] >> 4) & 0x0FUL);
+    return priority;
+}
+
+static inline uint32_t get_bus_fault_priority(SCB_t * const self){
+    uint32_t priority = ((self->SCB_SHPR[0] >> 12) & 0x0FUL);
+    return priority;
+}
+
+uint32_t SCB_get_priority(SCB_t * const self, IRQn_t IRQn){
+    if(IRQn >= 0){
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d", IRQn);
+        return 0;
+    }
+    
+    switch (IRQn) {
+        case SysTick_IRQn:
+            return get_systick_priority(self);
+        case UsageFault_IRQn:
+            return get_usage_fault_priority(self);
+        case BusFault_IRQn:
+            return get_bus_fault_priority(self);
+        case MemoryManagement_IRQn:
+            return get_mem_manage_priority(self);
+        default:
+            printf("SCB: could not get the priority for IRQn: %d, not supported", IRQn);
+            return 0;
+    }   
 }
