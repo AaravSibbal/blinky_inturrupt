@@ -5,6 +5,7 @@
 #include "../print/printf.h"
 
 #define SCB_BASE (0xE000ED00)
+#define SCB_AIRCR_KEY ((uint32_t) 0x5FA)
 
 #define USGFAULTENA_MSK (1UL << 18)
 #define BUSFAULTENA_MSK (1UL << 17)
@@ -37,6 +38,9 @@
 #define CFSR_UNALIGNED_MSK (1UL<<24)
 #define CFSR_DIVBYZERO_MSK (1UL<<25)
 
+#define ONES_16 ((1UL<<16)-1)
+#define AIRCR_PRIORITY_GROUPING_MSK ((ONES_16 << 16)|(7UL<<8))
+
 
 typedef struct SCB{
     __IO uint32_t SCB_CPUID;
@@ -56,6 +60,14 @@ typedef struct SCB{
 
 #define SCB_ENGINE ((SCB_t*) SCB_BASE)
 
+typedef enum PriorityGroup{
+    PRIGROUP_4PRE_0SUB = 0x03,
+    PRIGROUP_3PRE_1SUB = 0x04,
+    PRIGROUP_2PRE_2SUB = 0X05,
+    PRIGROUP_1PRE_3SUB = 0x06,
+    PRIGROUP_0PRE_4SUB = 0x07 
+}PriorityGroup_t;
+
 /**
     enables bus, mem and usage faults
 */
@@ -66,5 +78,6 @@ void HardFault_Handler(void);
 void BusFault_Handler(void);
 void MemManage_Handler(void);
 void UsageFault_Handler(void);
+void SCB_write_priority_grouping(SCB_t * const self, PriorityGroup_t pg);
 
 #endif

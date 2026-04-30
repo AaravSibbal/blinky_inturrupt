@@ -1,6 +1,5 @@
 #include "scb.h"
 #include "Src/print/printf.h"
-#include <cstdio>
 #include <stdint.h>
 
 static inline void SCB_enable_errors(SCB_t * const self){
@@ -207,4 +206,10 @@ __attribute__((used)) static void UsageFault_Decoder(const uint32_t * const faul
     while(1){
         __asm volatile ("nop");
     }
+}
+
+void SCB_write_priority_grouping(SCB_t * const self, PriorityGroup_t pg){
+    uint32_t pg_32 = pg;
+    uint32_t aircr_clear = (self->SCB_AIRCR) & ~(AIRCR_PRIORITY_GROUPING_MSK);
+    self->SCB_AIRCR = aircr_clear | (SCB_AIRCR_KEY<<16) | (pg_32<<8);
 }

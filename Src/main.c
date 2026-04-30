@@ -35,6 +35,7 @@ and that makes sense to me.
 
 
 #include "Src/print/driver/itm.h"
+#include "interrupts/scb.h"
 #include "rcc.h"
 #include "interrupts/syscfg.h"
 #include "print/printf.h"
@@ -48,7 +49,9 @@ int main(void){
     init_clocks();
     // SYSCFG_enable_EXTI(USER_BTN_SYSCFG_PORT, USER_BTN_PIN);
     ITM_init(ITM_ENGINE);
-    printf("I did it!!! with no heap!\n");
+    SCB_init(SCB_ENGINE);
+    
+    // printf("I did it!!! with no heap!\n");
     // char ch = 'A';
     // int ch_int = (int) ch;
     // __io_putchar(ch_int);
