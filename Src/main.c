@@ -50,11 +50,8 @@ int main(void){
     // SYSCFG_enable_EXTI(USER_BTN_SYSCFG_PORT, USER_BTN_PIN);
     ITM_init(ITM_ENGINE);
     SCB_init(SCB_ENGINE);
-    
-    // printf("I did it!!! with no heap!\n");
-    // char ch = 'A';
-    // int ch_int = (int) ch;
-    // __io_putchar(ch_int);
+    SCB_write_priority_grouping(SCB_ENGINE, PRIGROUP_4PRE_0SUB);
+
     while(1){
 
     }

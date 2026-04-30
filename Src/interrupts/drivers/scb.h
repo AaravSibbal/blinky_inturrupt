@@ -1,8 +1,9 @@
 #ifndef SCB_H
 #define SCB_H
 
-#include "../def.h"
-#include "../print/printf.h"
+#include "../../def.h"
+#include "../../print/printf.h"
+#include "irq.h"
 
 #define SCB_BASE (0xE000ED00)
 #define SCB_AIRCR_KEY ((uint32_t) 0x5FA)
@@ -42,6 +43,7 @@
 #define AIRCR_PRIORITY_GROUPING_MSK ((ONES_16 << 16)|(7UL<<8))
 
 
+
 typedef struct SCB{
     __IO uint32_t SCB_CPUID;
     __IO uint32_t SCB_ICSR;
@@ -79,5 +81,17 @@ void BusFault_Handler(void);
 void MemManage_Handler(void);
 void UsageFault_Handler(void);
 void SCB_write_priority_grouping(SCB_t * const self, PriorityGroup_t pg);
+
+
+void SCB_enable_IRQ(SCB_t * const self, IRQn_t IRQn);
+void SCB_disable_IRQ(SCB_t * const self, IRQn_t IRQn);
+void SCB_set_pending_IRQ(SCB_t * const self, IRQn_t IRQn);
+void SCB_clear_pending_IRQ(SCB_t * const self, IRQn_t IRQn);
+uint32_t  SCB_get_pending_IRQ(SCB_t * const self, IRQn_t IRQn);
+uint32_t SCB_get_active(SCB_t * const self, IRQn_t IRQn);
+void SCB_set_priority(SCB_t * const self, IRQn_t IRQn, uint32_t priority);
+uint32_t SCB_get_priority(SCB_t * const self, IRQn_t IRQn);
+
+SCB_set_priority()
 
 #endif

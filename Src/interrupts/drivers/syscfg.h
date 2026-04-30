@@ -1,7 +1,7 @@
 #ifndef SYSCFG_H
 #define SYSCFG_H
 
-#include "../def.h"
+#include "../../def.h"
 
 #define SYSCFG_BASE (0x40013800)
 #define EXTICR1_PA_BIT (0b0000)
