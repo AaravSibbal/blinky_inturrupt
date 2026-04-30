@@ -1,7 +1,6 @@
 #include "scb.h"
 #include "Src/print/printf.h"
 #include "irq.h"
-#include <cstdio>
 #include <stdint.h>
 
 static inline void SCB_enable_errors(SCB_t * const self){
@@ -216,7 +215,32 @@ void SCB_write_priority_grouping(SCB_t * const self, PriorityGroup_t pg){
     self->SCB_AIRCR = aircr_clear | (SCB_AIRCR_KEY<<16) | (pg_32<<8);
 }
 
+uint32_t  SCB_get_pending_IRQ(SCB_t * const self, IRQn_t IRQn){
+    if(IRQn >= 0){
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d", IRQn);
+        return 0;
+    }
+
+    switch(IRQn){
+        case SysTick_IRQn:
+            
+            break;
+        case UsageFault_IRQn:
+            break;
+        case BusFault_IRQn:
+            break;
+        case MemoryManagement_IRQn:
+            break;
+        default:
+            printf("SCB: couldn't get the pending bit, IRQn not supported: %d", IRQn);
+    }
+}
+
 uint32_t SCB_get_active(SCB_t * const self, IRQn_t IRQn){
+    if(IRQn >= 0){
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d", IRQn);
+        return 0;
+    }
     switch(IRQn){
         case SysTick_IRQn:
             uint32_t is_active = SHCSR_SYSTICK_IS_ACTIVE_MSK;
@@ -235,7 +259,7 @@ uint32_t SCB_get_active(SCB_t * const self, IRQn_t IRQn){
             return is_active;
             break;
         default:
-            printf("couldn't get the active bit, IRQn not supported: %d", IRQn);
+            printf("SCB: couldn't get the active bit, IRQn not supported: %d", IRQn);
             return 0;
     }
 }
