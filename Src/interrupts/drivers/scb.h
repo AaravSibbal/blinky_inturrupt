@@ -11,6 +11,7 @@
 #define USGFAULTENA_MSK (1UL << 18)
 #define BUSFAULTENA_MSK (1UL << 17)
 #define MEMFAULTENA_MSK (1UL << 16)
+
 #define STKALIGN_MSK (1UL<<9)
 #define DIV_0_TRP_MSK (1UL<<4)
 

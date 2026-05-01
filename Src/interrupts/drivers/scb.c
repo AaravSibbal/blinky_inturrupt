@@ -215,30 +215,125 @@ void SCB_write_priority_grouping(SCB_t * const self, PriorityGroup_t pg){
     self->SCB_AIRCR = aircr_clear | (SCB_AIRCR_KEY<<16) | (pg_32<<8);
 }
 
-uint32_t  SCB_get_pending_IRQ(SCB_t * const self, IRQn_t IRQn){
+
+void SCB_enable_IRQ(SCB_t * const self, IRQn_t IRQn){
     if(IRQn >= 0){
-        printf("SCB: IRQn greater than 0, check failed, IRQn: %d", IRQn);
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d\n", IRQn);
+        return;
+    }
+
+    switch(IRQn) {
+        case SysTick_IRQn:
+            printf("I haven't made the systick driver yet! could not enable systick\n");
+            break;
+        case UsageFault_IRQn:
+            self->SCB_SHCSR |= USGFAULTENA_MSK;
+            break;
+        case BusFault_IRQn:
+            self->SCB_SHCSR |= BUSFAULTENA_MSK;
+            break;
+        case MemoryManagement_IRQn:
+            self->SCB_SHCSR |= MEMFAULTENA_MSK;
+            break;
+        default:
+            printf("SCB: couldn't the enable IRQn, IRQn not supported: %d\n", IRQn);
+    }
+}
+
+void SCB_disable_IRQ(SCB_t * const self, IRQn_t IRQn){
+    if(IRQn >= 0){
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d\n", IRQn);
+        return;
+    }
+
+    switch (IRQn) {
+        case SysTick_IRQn:
+            printf("I haven't made the systick driver yet, could not disable systick interrupt\n");
+            break;
+        case UsageFault_IRQn:
+            self->SCB_SHCSR &= ~(USGFAULTENA_MSK);
+            break;
+        case BusFault_IRQn:
+            self->SCB_SHCSR &= ~(BUSFAULTENA_MSK);
+            break;
+        case MemoryManagement_IRQn:
+            self->SCB_SHCSR &= ~(MEMFAULTENA_MSK);
+            break;
+        default:
+            printf("SCB: couldn't the disable IRQn, IRQn not supported: %d\n", IRQn);
+    }
+}
+
+void SCB_set_pending_IRQ(SCB_t * const self, IRQn_t IRQn){
+    if(IRQn >= 0){
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d\n", IRQn);
+        return;
+    }
+    switch (IRQn) {
+        case SysTick_IRQn:
+            self->SCB_ICSR = ICSR_SYSTICK_SET_PENDING_MSK;
+            break;
+        case UsageFault_IRQn:
+            self->SCB_SHCSR |= SHCSR_USGFAULT_SET_PENDING_MSK;
+            break;
+        case BusFault_IRQn:
+            self->SCB_SHCSR |= SHCSR_BUSFAULT_SET_PENDING_MSK;
+            break;
+        case MemoryManagement_IRQn:
+            self->SCB_SHCSR |= SHCSR_MEMFAULT_SET_PENDING_MSK;
+            break;
+        default:
+            printf("SCB: couldn't the pending bit, IRQn not supported: %d\n", IRQn);
+    }
+}
+
+void SCB_clear_pending_IRQ(SCB_t * const self, IRQn_t IRQn){
+    if(IRQn >= 0){
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d\n", IRQn);
+        return;
+    }
+
+    switch(IRQn){
+        case SysTick_IRQn:
+            self->SCB_ICSR = ICSR_SYSTICK_CLR_PENDING_MSK;
+            break;
+        case UsageFault_IRQn:
+            self->SCB_SHCSR &= SHCSR_USGFAULT_CLEAR_PENDING_MSK;
+            break;
+        case BusFault_IRQn:
+            self->SCB_SHCSR &= SHCSR_BUSFAULT_CLEAR_PENDING_MSK;
+            break;
+        case MemoryManagement_IRQn:
+            self->SCB_SHCSR &= SHCSR_MEMFAULT_CLEAR_PENDING_MSK;
+            break;
+        default:
+            printf("SCB: couldn't clear the pending bit, IRQn not supported: %d\n", IRQn);
+    }
+}
+
+uint32_t SCB_get_pending_IRQ(SCB_t * const self, IRQn_t IRQn){
+    if(IRQn >= 0){
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d\n", IRQn);
         return 0;
     }
 
     switch(IRQn){
         case SysTick_IRQn:
-            
-            break;
+            return ((uint32_t) ICSR_SYSTICK_IS_PENDING_MSK(self));            
         case UsageFault_IRQn:
-            break;
+            return ((uint32_t) SHCSR_USGFAULT_IS_PENDING_MSK(self));
         case BusFault_IRQn:
-            break;
+            return ((uint32_t) SHCSR_BUSFAULT_IS_PENDING_MSK(self));
         case MemoryManagement_IRQn:
-            break;
+            return ((uint32_t) SHCSR_MEMFAULT_IS_PENDING_MSK(self));
         default:
-            printf("SCB: couldn't get the pending bit, IRQn not supported: %d", IRQn);
+            printf("SCB: couldn't get the pending bit, IRQn not supported: %d\n", IRQn);
     }
 }
 
 uint32_t SCB_get_active(SCB_t * const self, IRQn_t IRQn){
     if(IRQn >= 0){
-        printf("SCB: IRQn greater than 0, check failed, IRQn: %d", IRQn);
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d\n", IRQn);
         return 0;
     }
     switch(IRQn){
@@ -259,7 +354,7 @@ uint32_t SCB_get_active(SCB_t * const self, IRQn_t IRQn){
             return is_active;
             break;
         default:
-            printf("SCB: couldn't get the active bit, IRQn not supported: %d", IRQn);
+            printf("SCB: couldn't get the active bit, IRQn not supported: %d\n", IRQn);
             return 0;
     }
 }
@@ -286,11 +381,11 @@ static inline void set_mem_manage_priority(SCB_t * const self, uint32_t priority
 
 void SCB_set_priority(SCB_t * const self, IRQn_t IRQn, uint32_t priority){
     if(IRQn >= 0){
-        printf("SCB: IRQn greater than 0, check failed, IRQn: %d", IRQn);
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d\n", IRQn);
         return;
     }
     if(priority > 16){
-        printf("SCB: could not set the priority for IRQn: %d, becauase the priority is too high, Priority: %d", IRQn, priority);
+        printf("SCB: could not set the priority for IRQn: %d, becauase the priority is too high, Priority: %d\n", IRQn, priority);
         return;
     }
     
@@ -308,7 +403,7 @@ void SCB_set_priority(SCB_t * const self, IRQn_t IRQn, uint32_t priority){
             set_mem_manage_priority(self, priority);
             break;
         default:
-            printf("SCB: could not set the priority for IRQn: %d, not supported", IRQn);
+            printf("SCB: could not set the priority for IRQn: %d, not supported\n", IRQn);
     }   
 }
 
@@ -334,7 +429,7 @@ static inline uint32_t get_bus_fault_priority(SCB_t * const self){
 
 uint32_t SCB_get_priority(SCB_t * const self, IRQn_t IRQn){
     if(IRQn >= 0){
-        printf("SCB: IRQn greater than 0, check failed, IRQn: %d", IRQn);
+        printf("SCB: IRQn greater than 0, check failed, IRQn: %d\n", IRQn);
         return 0;
     }
     
@@ -348,7 +443,7 @@ uint32_t SCB_get_priority(SCB_t * const self, IRQn_t IRQn){
         case MemoryManagement_IRQn:
             return get_mem_manage_priority(self);
         default:
-            printf("SCB: could not get the priority for IRQn: %d, not supported", IRQn);
+            printf("SCB: could not get the priority for IRQn: %d, not supported\n", IRQn);
             return 0;
     }   
 }
