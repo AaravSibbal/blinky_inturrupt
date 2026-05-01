@@ -1,7 +1,4 @@
 #include "scb.h"
-#include "Src/print/printf.h"
-#include "irq.h"
-#include <stdint.h>
 
 static inline void SCB_enable_errors(SCB_t * const self){
     self->SCB_SHCSR |= (BUSFAULTENA_MSK) | (USGFAULTENA_MSK) | (MEMFAULTENA_MSK);

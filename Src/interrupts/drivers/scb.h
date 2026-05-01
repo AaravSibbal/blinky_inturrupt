@@ -117,6 +117,4 @@ uint32_t SCB_get_active(SCB_t * const self, IRQn_t IRQn);
 void SCB_set_priority(SCB_t * const self, IRQn_t IRQn, uint32_t priority);
 uint32_t SCB_get_priority(SCB_t * const self, IRQn_t IRQn);
 
-SCB_set_priority()
-
 #endif
