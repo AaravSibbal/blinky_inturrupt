@@ -1,4 +1,5 @@
 #include "interrupt.h"
+#include "drivers/scb.h"
 
 void enable_IRQ(IRQn_t IRQn){
     if(IRQn >= 0){
@@ -21,7 +22,7 @@ void disable_IRQ(IRQn_t IRQn){
         printf("I haven't made the systick driver yet, couldn't disable systick interrupt\n");
         return;
     }
-    SCB_enable_IRQ(SCB_ENGINE, IRQn);
+    SCB_disable_IRQ(SCB_ENGINE, IRQn);
 }
 
 void set_pending_IRQ(IRQn_t IRQn){

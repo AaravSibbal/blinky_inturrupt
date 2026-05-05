@@ -23,7 +23,6 @@ void NVIC_disable_IRQ(nvic_t * const self, IRQn_t IRQn){
         printf("NVIC:could not disable IRQn %d", IRQn);
         return;
     }
-    size_check(IRQn);
     uint32_t icer_idx = IRQn/32;
     uint32_t icer_bit = IRQn%32;
 

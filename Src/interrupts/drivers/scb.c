@@ -334,23 +334,19 @@ uint32_t SCB_get_active(SCB_t * const self, IRQn_t IRQn){
         printf("SCB: IRQn greater than 0, check failed, IRQn: %d\n", IRQn);
         return 0;
     }
-    uint32_t is_active = 0;
+
     switch(IRQn){
         case SysTick_IRQn:
-            is_active = ((uint32_t) SHCSR_SYSTICK_IS_ACTIVE_MSK(self));
-            return is_active;
+            return ((uint32_t) SHCSR_SYSTICK_IS_ACTIVE_MSK(self));
             break;
         case UsageFault_IRQn:
-            is_active = SHCSR_USGFAULT_IS_ACTIVE_MSK(self);
-            return is_active;
+            return ((uint32_t) SHCSR_USGFAULT_IS_ACTIVE_MSK(self));
             break;
         case BusFault_IRQn:
-            is_active = SHCSR_BUSFAULT_IS_ACTIVE_MSK(self);
-            return is_active;
+            return ((uint32_t) SHCSR_BUSFAULT_IS_ACTIVE_MSK(self));
             break;
         case MemoryManagement_IRQn:
-            is_active = SHCSR_MEMFAULT_IS_ACTIVE_MSK(self);
-            return is_active;
+            return ((uint32_t) SHCSR_MEMFAULT_IS_ACTIVE_MSK(self));
             break;
         default:
             printf("SCB: couldn't get the active bit, IRQn not supported: %d\n", IRQn);
@@ -383,7 +379,7 @@ void SCB_set_priority(SCB_t * const self, IRQn_t IRQn, uint32_t priority){
         printf("SCB: IRQn greater than 0, check failed, IRQn: %d\n", IRQn);
         return;
     }
-    if(priority > 16){
+    if(priority > 15){
         printf("SCB: could not set the priority for IRQn: %d, becauase the priority is too high, Priority: %d\n", IRQn, priority);
         return;
     }
