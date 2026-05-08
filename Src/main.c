@@ -1,4 +1,3 @@
-#include <stdint.h>
 
 /**
  *  The thing I am trying to do is set up in inturrupt on the user button so led blinks
@@ -34,7 +33,6 @@ and that makes sense to me.
 
 
 
-#include "Src/print/driver/itm.h"
 #include "interrupts/drivers/scb.h"
 #include "rcc.h"
 #include "peripherals/drivers/syscfg.h"

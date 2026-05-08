@@ -43,16 +43,19 @@ set(cpu_PARAMS
 # Sources
 set(sources_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/Src/main.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/drivers/gpio.c   
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/print/driver/dbgmcu.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/print/driver/itm.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/print/driver/tpiu.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/print/driver/demcr.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/print/printf.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/drivers/exti.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/interrupts/drivers/nvic.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/interrupts/drivers/scb.c
-	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/drivers/syscfg.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/gpio/gpio.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/dbgmcu/dbgmcu.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/demcr/demcr.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/exti/exti.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/itm/itm.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/nvic/nvic.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/scb/scb.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/syscfg/syscfg.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/timers/systick/systick.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/peripherals/tpiu/tpiu.c   
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/services/print/printf.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/services/interrupts/interrupt.c
+	${CMAKE_CURRENT_SOURCE_DIR}/Src/services/delay/delay.c
 )
 
 # Include directories for all compilers

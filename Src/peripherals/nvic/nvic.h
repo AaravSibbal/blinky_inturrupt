@@ -6,8 +6,6 @@
 
 #define NVIC_BASE (0xE000E100)
 
-#define EXTI0_IRQ ((IRQn_t)6)
-
 typedef struct nvic{
     __IO uint32_t NVIC_ISER[8];
     uint32_t RESERVED_0[24];

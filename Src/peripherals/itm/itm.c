@@ -1,55 +1,75 @@
 #include "itm.h"
-#include "dbgmcu.h"
-#include "../../peripherals/drivers/gpio.h"
-#include "demcr.h"
-#include "tpiu.h"
 
-static void ITM_unlock_access(ITM_t * const self){
-    self->ITM_lock_access = ITM_UNLOCK_MAGIC_WRITE; 
+#define ITM_BASE (0xE0000000)
+#define ITM_UNLOCK_MAGIC_WRITE (0xC5ACCE55)
+#define ITM_GLOBAL_EN_MSK (1<<0)
+#define ITM_ENGINE ((ITM_driver_t *) ITM_BASE)
+
+typedef struct ITM_driver{
+    __IO uint32_t ITM_stim_port[32];
+    uint32_t RESERVED_0[864];
+    __IO uint32_t ITM_trace_en;
+    uint32_t RESERVED_1[20];
+    __IO uint32_t ITM_trace_priv;
+    uint32_t RESERVED_2[15];
+    __IO uint32_t ITM_trace_ctrl;
+    uint32_t RESERVED_3[75];
+    __IO uint32_t ITM_lock_access;
+}ITM_driver_t;
+
+struct ITM{
+    ITM_driver_t* driver;
+    GPIO_t* gpio;
+};
+
+static void ITM_unlock_access(ITM_t* self){
+    self->driver->ITM_lock_access = ITM_UNLOCK_MAGIC_WRITE; 
 }
 
-static void ITM_enable(ITM_t * const self){
-    self->ITM_trace_ctrl |= ITM_GLOBAL_EN_MSK;
+static void ITM_enable(ITM_t* self){
+    self->driver->ITM_trace_ctrl |= ITM_GLOBAL_EN_MSK;
 }
 
-static void ITM_gpio_setup(void){
-    GPIO_set_moder(ITM_GPIO_PORT, ITM_GPIO_PIN, GPIO_MODE_ALT);
-    GPIO_set_alt_func(ITM_GPIO_PORT, ITM_GPIO_PIN, AF0);
+static void ITM_gpio_setup(ITM_t* self){
+    GPIO_set_moder(self->gpio, GPIO_MODE_ALT);
+    GPIO_set_alt_func(self->gpio, AF0);
 }
 
-static void ITM_unlock_port(ITM_t * const self, uint8_t port){
+static void ITM_unlock_port(ITM_t* self, uint8_t port){
     if(port >= 32){
         return;
     }
 
     uint32_t trace_priv_bit = port/4;
-    self->ITM_trace_priv |= (1UL<<trace_priv_bit);
-    self->ITM_trace_en |= (1UL<<port);
+    self->driver->ITM_trace_priv |= (1UL<<trace_priv_bit);
+    self->driver->ITM_trace_en |= (1UL<<port);
 }
 
-void ITM_init(ITM_t * const self){
-    ITM_gpio_setup();
+ITM_t* ITM_init(ITM_t* self, GPIO_t* gpio){
+    self->driver = ITM_ENGINE;
+    self->gpio = GPIO_init(gpio, GPIO_PORT_B, GPIO_PIN_3);
+    ITM_gpio_setup(self);
     DEMCR_enable_trace();
     DBGMCU_debug_enable(DBGMCU_ASYNC);
-    // TPIU_set_proto(TPIU_SWO_NRZ);
     ITM_unlock_access(self);
     ITM_enable(self);
     ITM_unlock_port(self, 0);
+    return self;
 }
 
-void ITM_put_char(ITM_t * const self, char ch, uint8_t port){
+void ITM_put_char(ITM_t* self, char ch, uint8_t port){
     if(port >= 32){
         return;
     }
 
-    while(self->ITM_stim_port[port] == 0){
+    while(self->driver->ITM_stim_port[port] == 0){
         // loop 
     }
 
-    self->ITM_stim_port[port] = (uint32_t)ch;
+    self->driver->ITM_stim_port[port] = (uint32_t)ch;
 }
 
-static void ITM_put_char_int(ITM_t * const self, int ch, uint8_t port){
+static void ITM_put_char_int(ITM_driver_t* self, int ch, uint8_t port){
     if(port >= 32){
         return;
     }

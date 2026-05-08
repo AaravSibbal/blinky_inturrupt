@@ -5,16 +5,7 @@
 
 #define EXTI_BASE (0x40013C00)
 
-typedef struct EXTI{
-    __IO uint32_t EXTI_IMR;
-    __IO uint32_t EXTI_EMR;
-    __IO uint32_t EXTI_RTSR;
-    __IO uint32_t EXTI_FTSR;
-    __IO uint32_t EXTI_SWIER;
-    __IO uint32_t EXTI_PR;
-} EXTI_t;
-
-#define EXTI_ENGINE ((EXTI_t *)(EXTI_BASE))
+typedef struct EXTI EXTI_t;
 
 typedef enum EXTI_line{
     EXTI_LINE_0 = 0,
@@ -42,6 +33,7 @@ typedef enum EXTI_line{
     EXTI_LINE_RTC_WAKEUP,
 } EXTI_Line_t;
 
+EXTI_t* EXTI_init(void);
 void EXTI_set_IMR(EXTI_Line_t line);
 void EXTI_set_RTSR(EXTI_Line_t line);
 void EXTI_clear_PR(EXTI_Line_t line);

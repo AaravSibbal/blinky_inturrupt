@@ -1,5 +1,4 @@
 #include "interrupt.h"
-#include "drivers/scb.h"
 
 void enable_IRQ(IRQn_t IRQn){
     if(IRQn >= 0){

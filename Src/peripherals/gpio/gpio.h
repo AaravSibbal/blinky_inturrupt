@@ -4,8 +4,7 @@
 
 #include "../../def.h"
 
-#define GPIOB_BASE  ((uint32_t)0x40020400)
-#define GPIOD_BASE ((uint32_t)0x40020C00)
+typedef struct GPIO GPIO_t; 
 
 typedef enum GPIO_MODER {
     GPIO_MODE_INPUT = 0x00,
@@ -63,17 +62,6 @@ typedef enum GPIO_Pin {
 
 }GPIO_Pin_t;
 
-typedef struct gpio_struct{
-    __IO uint32_t MODER;
-    __IO uint32_t OTYPER;
-    __IO uint32_t GPIO_OSPEEDR;
-    __IO uint32_t GPIO_PUPDR;
-    __IO uint32_t GPIO_IDR;
-    __IO uint32_t ODR;
-    __IO uint32_t BSSR;
-    __IO uint32_t GPIO_LCKR;
-    __IO uint32_t AFR[2];
-} GPIO_t;
 
 typedef enum BSSR_value{
     BSSR_RESET = 0,
@@ -86,15 +74,28 @@ typedef enum PUPDR_val{
     PULL_DOWN
 }PUPDR_t;
 
-#define GPIOB ((GPIO_t *) GPIOB_BASE)
-#define GPIOD ((GPIO_t *) GPIOD_BASE)
+typedef enum GPIO_port{
+    GPIO_PORT_A = 0,
+    GPIO_PORT_B,
+    GPIO_PORT_C,
+    GPIO_PORT_D,
+    GPIO_PORT_E,
+    GPIO_PORT_F,
+    GPIO_PORT_G,
+    GPIO_PORT_H,
+    GPIO_PORT_I,
+    GPIO_PORT_J,
+    GPIO_PORT_K
+}GPIO_port_t;
 
-void GPIO_set_moder(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_MODER_t mode);
-void GPIO_set_otyper(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_OTYPER_t type);
-void GPIO_set_odr(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_ODR_t output);
-void GPIO_set_alt_func(GPIO_t* gpio, GPIO_Pin_t pin, GPIO_AFx_t function);
-void GPIO_set_bssr(GPIO_t* gpio, GPIO_Pin_t pin, BSSR_value_t);
-void GPIO_set_pupdr(GPIO_t *gpio, GPIO_Pin_t pin, PUPDR_t val);
+
+GPIO_t* GPIO_init(GPIO_t* self, GPIO_port_t port, GPIO_Pin_t pin);
+void GPIO_set_moder(GPIO_t* self, GPIO_MODER_t mode);
+void GPIO_set_otyper(GPIO_t* self, GPIO_OTYPER_t type);
+void GPIO_set_odr(GPIO_t* self, GPIO_ODR_t output);
+void GPIO_set_alt_func(GPIO_t* self, GPIO_AFx_t function);
+void GPIO_set_bssr(GPIO_t* self, BSSR_value_t);
+void GPIO_set_pupdr(GPIO_t *self, PUPDR_t val);
 
 
 #endif
