@@ -1,10 +1,8 @@
 #include "gpio.h"
 #include "assert.h"
-#include <cstddef>
 
 #define GPIO_BASE_ADDRESS (0x40020000)
 #define GPIO_OFFSET (0x400)
-#define MODER_CLR_MSK(pin) (~(MSK_OF_ONES(2) << (2*(pin))))
 
 typedef struct GPIO_driver{
     __IO uint32_t MODER;
@@ -42,18 +40,29 @@ void GPIO_set_moder(GPIO_t* self, const GPIO_MODER_t mode){
     self->driver->MODER |= GPIO_get_moder_set_msk(mode, self->pin);
 }
 
-static inline uint32_t GPIO_get_otyper_msk(GPIO_Pin_t pin){
-    return ((uint32_t)())
+static inline uint32_t GPIO_get_otyper_msk(const GPIO_Pin_t pin){
+    return ((uint32_t)(MSK_OF_ONES(1) << pin));
 }
 
+static inline uint32_t GPIO_get_otyper_set_msk(const GPIO_OTYPER_t type,
+    const GPIO_Pin_t pin){
+    return ((uint32_t)(((uint32_t)type) << pin));
+}
 void GPIO_set_otyper(GPIO_t* self, const GPIO_OTYPER_t type){
     GPIO_assert_self_and_driver(self);
-    self->driver->OTYPER &= ~(1UL<<self->pin);
-    self->driver->OTYPER |= ((uint32_t)type<<self->pin);
+    self->driver->OTYPER &= ~(GPIO_get_otyper_msk(self->pin));
+    self->driver->OTYPER |= GPIO_get_otyper_set_msk(type, self->pin);
 }
 
+static inline uint32_t GPIO_get_odr_msk(const GPIO_Pin_t pin){
+    return ((uint32_t)(MSK_OF_ONES(1) << pin));
+}
+
+static inline uint32_t 
+
 void GPIO_set_odr(GPIO_t* self, const GPIO_ODR_t output){
-    self->driver->ODR &= ~(1UL<<self->pin);
+    GPIO_assert_self_and_driver(self);
+    self->driver->ODR &= ~(GPIO_get_odr_msk(self->pin));
     self->driver->ODR |= ((uint32_t)output<<self->pin);
 }
 

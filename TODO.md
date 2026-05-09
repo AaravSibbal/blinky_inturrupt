@@ -17,3 +17,5 @@
 8. create masks for gpio bitshifts (current)
 
 9. create critical sections for __IO variables when doing read/modify/write
+
+10. use Bit-banding for single bit write operations (the Difinitive guide Chapter 5.5)
