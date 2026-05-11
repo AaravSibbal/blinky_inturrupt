@@ -10,12 +10,19 @@
 
 5. delay do that in general
 
-6. set up button service
+6. set up button device
 
-7. convert all enums that are used in bit operations to uint32_t. 
+7. convert all enums that are used in bit operations to uint32_t.(done)
 
-8. create masks for gpio bitshifts (current)
+8. create masks for gpio bitshifts (done)
 
-9. create critical sections for __IO variables when doing read/modify/write
+9. create critical sections for __IO variables when doing read/modify/write (done)
 
 10. use Bit-banding for single bit write operations (the Difinitive guide Chapter 5.5)
+
+11. finish RCC driver with peripheral clocks and all (current)
+
+12. set up LED device
+    - connect the nvic, exti, syscfg, gpio, rcc dots. 
+
+13. run main. 

@@ -33,10 +33,7 @@ and that makes sense to me.
 
 
 
-#include "interrupts/drivers/scb.h"
 #include "rcc.h"
-#include "peripherals/drivers/syscfg.h"
-#include "print/printf.h"
 
 #define USER_BTN_PIN ((uint8_t) 0)
 #define USER_BTN_SYSCFG_PORT (SYSCFG_EXTI_PORTA)
