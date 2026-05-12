@@ -4,6 +4,7 @@
 
 #include "../../def.h"
 #include "../../arm/arm.h"
+#include "../rcc/rcc.h"
 
 typedef struct GPIO GPIO_t; 
 
@@ -69,20 +70,9 @@ typedef enum PUPDR_val{
     PULL_DOWN
 }PUPDR_t;
 
-typedef enum GPIO_port{
-    GPIO_PORT_A = 0,
-    GPIO_PORT_B,
-    GPIO_PORT_C,
-    GPIO_PORT_D,
-    GPIO_PORT_E,
-    GPIO_PORT_F,
-    GPIO_PORT_G,
-    GPIO_PORT_H,
-    GPIO_PORT_I,
-}GPIO_port_t;
 
 
-GPIO_t* GPIO_init(const GPIO_port_t port, const GPIO_Pin_t pin);
+GPIO_t* GPIO_init(const GPIO_port_t port, const GPIO_Pin_t pin, RCC_t* rcc_obj);
 void GPIO_set_moder(GPIO_t* self, const GPIO_MODER_t mode);
 void GPIO_set_otyper(GPIO_t* self, const GPIO_OTYPER_t type);
 void GPIO_set_odr(GPIO_t* self, const GPIO_ODR_t output);

@@ -84,4 +84,4 @@
 //   // This creates a strong alias so that
 //   // calls to `sbrk()` are resolved to our `_sbrk()` implementation.
   // __strong_reference(_sbrk, sbrk);
-#endif
+// #endif

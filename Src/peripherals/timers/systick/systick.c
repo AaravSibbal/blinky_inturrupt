@@ -1,5 +1,7 @@
 #include "systick.h"
+#include "Src/arm/arm.h"
 #include "assert.h"
+#include <cstddef>
 
 typedef struct Systick_driver{
     __IO uint32_t ctrl;
@@ -32,12 +34,28 @@ uint32_t Systick_get_ticks(void* self){
     return systick_device->ticks;
 }
 
-void Systick_reset(void* self){
+__STATIC_INLINE void Systick_disable_clock(Systick_t* self){
     assert(self != NULL);
-    Systick_t *systick_device = (Systick_t *)self;
-    systick_device->ticks = 0;
+    uint32_t primask = __get_PRIMASK();
+    __disable_irq();
+    self->driver->ctrl &= ~((uint32_t)1<<0);
+    __set_PRIMASK(primask);
 }
 
+void Systick_stop(void *self){
+    assert(self != NULL);
+    Systick_t* systick_device = (Systick_t*)self;
+    Systick_disable_clock(systick_device);
+}
+
+void Systick_reset(void* self){
+    assert(self != NULL);
+    uint32_t primask = __get_PRIMASK();
+    __disable_irq();
+    Systick_t *systick_device = (Systick_t *)self;
+    systick_device->ticks = 0;
+    __enable_irq();
+}
 
 static inline void Systick_enable_interrupt(Systick_t* self){
     assert(self != NULL);

@@ -19,6 +19,7 @@ typedef struct GPIO_driver{
 struct GPIO{
     GPIO_driver_t* driver;
     GPIO_Pin_t pin;
+    RCC_t* rcc;
     __bool taken; 
 };
 
@@ -124,10 +125,11 @@ void GPIO_set_pupdr(GPIO_t *self, const PUPDR_t val){
     __set_PRIMASK(primask);
 }   
 
-GPIO_t* GPIO_init(const GPIO_port_t port, const GPIO_Pin_t pin){
+GPIO_t* GPIO_init(const GPIO_port_t port, const GPIO_Pin_t pin, RCC_t* rcc_obj){
     GPIO_t* self = &gpio_pool[port];
     self->driver = ((GPIO_driver_t*)(GPIO_BASE_ADDRESS + (port * GPIO_OFFSET)));
     self->pin = pin;
+    RCC_en_GPIO(rcc_obj, port);
     assert(!self->taken);
     self->taken = TRUE;
     return self;

@@ -2,6 +2,7 @@
 #define DEF_H
 
 #include <stdint.h>
+#include "assert.h"
 
 #define __IO volatile 
 
@@ -48,7 +49,7 @@ __INLINE uint32_t bit_band_get_addr(const uint32_t address, const uint32_t bit){
 	return bit_band_addr;
 }
 
-__INLINE void bit_band_write(const uint32_t addr, const uint32_t bit, uint32_t val){
+__INLINE void bit_band_write(const uint32_t addr, const uint32_t bit, const uint32_t val){
 	uint32_t alias_addr = bit_band_get_addr(addr, bit);
 	assert(alias_addr != 0);
 	assert(val == 0 || val == 1);
@@ -64,6 +65,18 @@ typedef enum {
 __INLINE uint32_t msk_of_ones(uint32_t num){
 	return ((uint32_t)((1UL << (num)) - 1));
 }
+
+typedef enum GPIO_port{
+    GPIO_PORT_A = 0,
+    GPIO_PORT_B,
+    GPIO_PORT_C,
+    GPIO_PORT_D,
+    GPIO_PORT_E,
+    GPIO_PORT_F,
+    GPIO_PORT_G,
+    GPIO_PORT_H,
+    GPIO_PORT_I,
+}GPIO_port_t;
 
 /**
 added from stm32407.h 

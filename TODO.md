@@ -6,11 +6,10 @@
 3. deal with side effects for it. 
 - gpio (done)
 
-4. wrap the third-party code i.e. printf.c/h for itm
+5. delay do that in general (done)
 
-5. delay do that in general
-
-6. set up button device
+6. set up button device 
+    - connect the nvic, exti, syscfg, gpio, rcc dots. 
 
 7. convert all enums that are used in bit operations to uint32_t.(done)
 
@@ -18,11 +17,10 @@
 
 9. create critical sections for __IO variables when doing read/modify/write (done)
 
-10. use Bit-banding for single bit write operations (the Difinitive guide Chapter 5.5)
+10. use Bit-banding for single bit write operations (the Difinitive guide Chapter 5.5) (done)
 
-11. finish RCC driver with peripheral clocks and all (current)
+11. finish RCC driver with peripheral clocks and all (done)
 
 12. set up LED device
-    - connect the nvic, exti, syscfg, gpio, rcc dots. 
-
+ 
 13. run main. 

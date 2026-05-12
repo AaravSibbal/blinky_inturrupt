@@ -34,6 +34,7 @@
 #include <stdint.h>
 
 #include "printf.h"
+#include "Src/peripherals/itm/itm.h"
 
 
 // define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H ...) to include the
@@ -129,7 +130,7 @@ typedef struct {
 
 
 void _putchar(char character){
-  ITM_put_char(ITM_ENGINE, character, 0);
+  __io_putchar(character);
 }
 
 

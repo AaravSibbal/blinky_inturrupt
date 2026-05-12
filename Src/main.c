@@ -33,26 +33,25 @@ and that makes sense to me.
 
 
 
-#include "rcc.h"
 
 #define USER_BTN_PIN ((uint8_t) 0)
 #define USER_BTN_SYSCFG_PORT (SYSCFG_EXTI_PORTA)
 
-void init_clocks(void);
+// void init_clocks(void);
 
 int main(void){
-    init_clocks();
-    // SYSCFG_enable_EXTI(USER_BTN_SYSCFG_PORT, USER_BTN_PIN);
-    ITM_init(ITM_ENGINE);
-    SCB_init(SCB_ENGINE);
-    SCB_write_priority_grouping(SCB_ENGINE, PRIGROUP_4PRE_0SUB);
+    // init_clocks();
+    // // SYSCFG_enable_EXTI(USER_BTN_SYSCFG_PORT, USER_BTN_PIN);
+    // ITM_init(ITM_ENGINE);
+    // SCB_init(SCB_ENGINE);
+    // SCB_write_priority_grouping(SCB_ENGINE, PRIGROUP_4PRE_0SUB);
 
     while(1){
 
     }
 }
 
-void init_clocks(void){
-    RCC_AHB1_ENR |= (RCC_AHB1_GPIOA_EN) | (RCC_AHB1_GPIOD_EN) | (RCC_AHB1_GPIOB_EN);
-    RCC_APB2_ENR |= (RCC_APB2_SYSCFG_EN);
-}
+// void init_clocks(void){
+//     RCC_AHB1_ENR |= (RCC_AHB1_GPIOA_EN) | (RCC_AHB1_GPIOD_EN) | (RCC_AHB1_GPIOB_EN);
+//     RCC_APB2_ENR |= (RCC_APB2_SYSCFG_EN);
+// }
