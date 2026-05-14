@@ -2,31 +2,6 @@
 
 This module provides a robust, zero-heap `printf` diagnostic window. Standard GCC `printf` relies on dynamic memory allocation (`malloc`/`_sbrk`), which introduces the risk of heap-stack collisions in a bare-metal environment. To avoid this, this project uses a lightweight, self-contained string formatter routed directly through the ARM Cortex-M4's Instrumentation Trace Macrocell (ITM) via the SWO pin.
 
-### Directory Structure
-
-```text
-print/
-├── print.c
-├── print.h
-└── drivers/
-    ├── dbgmcu.c
-    ├── dbgmcu.h
-    ├── demcr.c
-    ├── demcr.h
-    ├── itm.c
-    ├── itm.h
-    ├── tpiu.c
-    └── tpiu.h
-```
-
-### File Architecture
-
-* **`print.c` / `print.h`:** Contains the core formatting logic (via the `mpaland/printf` library) and the hardware bridge. It overrides the weak `_putchar` function to route every formatted character into the ITM driver.
-* **`drivers/itm.c/h`:** The main driver for the Instrumentation Trace Macrocell. Handles unlocking the ITM, enabling global transmission, and pushing raw characters out of Stimulus Port 0.
-* **`drivers/demcr.c/h`:** Controls the Debug Exception and Monitor Control Register. Responsible for enabling the master trace clock.
-* **`drivers/dbgmcu.c/h`:** Controls the MCU Debug Component. Handles routing the trace signals out to the physical STM32 pins (Configured for Asynchronous mode).
-* **`drivers/tpiu.c/h`:** Trace Port Interface Unit definitions. *(Note: Manual TPIU baud-rate configuration is intentionally bypassed in the C code, allowing the OpenOCD debugger to dynamically calculate and inject the correct prescaler to match the core clock.)*
-
 ### Internal Hardware Requirements
 
 To successfully route a character from the ARM core to the VS Code terminal, several specific hardware gates must be opened in sequence during boot:
@@ -133,4 +108,3 @@ void I2C1_EV_IRQHandler(void) {
 
 *   **Decoupled Architecture:** There is no runtime function registration API in this service. The Interrupt Management Service strictly handles the *configuration* (enabling, disabling, prioritizing) via the SCB and NVIC. The hardware directly handles the *execution* via the vector table.
 *   **Symbol Matching:** The function name in your C code must match the symbol name in the startup assembly file exactly. If there is a typo, the compiler will not throw an error, but the interrupt will fall back to the `Default_Handler` and trap the CPU.
-```

@@ -8,7 +8,7 @@
 
 5. delay do that in general (done)
 
-6. set up button device 
+6. set up button device (curent)
     - connect the nvic, exti, syscfg, gpio, rcc dots. 
 
 7. convert all enums that are used in bit operations to uint32_t.(done)
@@ -21,6 +21,6 @@
 
 11. finish RCC driver with peripheral clocks and all (done)
 
-12. set up LED device
+12. set up LED device(done)
  
-13. run main. 
+13. run main.(done) 
